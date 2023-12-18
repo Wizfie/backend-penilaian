@@ -46,9 +46,13 @@ public class PointController {
         return new ResponseEntity<>(teamScores, HttpStatus.OK);
     }
 
+//    @GetMapping("/point")
+//    public List<PointsYelyel> getByUsername(@RequestParam String username) {
+//        return pointService.getByUsername(username);
+//    }
     @GetMapping("/point")
-    public List<PointsYelyel> getByUsername(@RequestParam String username) {
-        return pointService.getByUsername(username);
+    public List<PointsYelyel> getByNip(@RequestParam String nip) {
+        return pointService.getByNip(nip);
     }
 
 

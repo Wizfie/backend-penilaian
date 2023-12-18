@@ -29,6 +29,8 @@
         @Column(name = "timestamp")
         private Date timestamp;
 
+        private String nip;
+
 
 
     }

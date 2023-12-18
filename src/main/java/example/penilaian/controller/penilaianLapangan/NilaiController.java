@@ -3,7 +3,6 @@ package example.penilaian.controller.penilaianLapangan;
 import example.penilaian.entity.penilaianLapangan.NilaiLapangan;
 import example.penilaian.model.penilaianLapangan.NilaiByUser;
 import example.penilaian.service.penilaianLapangan.NilaiService;
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,10 +45,10 @@ public class NilaiController {
         return nilaiService.getNilaiByUser(username);
     }
 
-//    @GetMapping("/nilai-getAll")
-//    public List<NilaiResponse> getAllNilai() {
-//        return nilaiService.getAllNilai();
-//    }
+    @GetMapping("/nilai-getAll")
+    public List<NilaiLapangan> getAllNilai() {
+        return nilaiService.getAllNilai();
+    }
 
 //    @DeleteMapping("/{username}/{teamName}/{timestamp}")
 //    public ResponseEntity<String> deleteNilai(

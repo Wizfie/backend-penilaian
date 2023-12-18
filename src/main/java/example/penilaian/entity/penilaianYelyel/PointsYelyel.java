@@ -30,4 +30,6 @@ public class PointsYelyel {
     @Temporal(TemporalType.DATE)
     private Date createAt;
 
+    private String nip;
+
 }

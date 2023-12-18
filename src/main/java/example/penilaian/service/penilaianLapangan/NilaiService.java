@@ -30,6 +30,9 @@ public class NilaiService {
     @Autowired
     private QuestionRepository questionRepository;
 
+
+//    public List<NilaiLapangan>
+
     @Transactional
     public void saveNilai(List<NilaiLapangan> nilaiLapanganData) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -73,20 +76,6 @@ public class NilaiService {
     }
 
 
-//    public List<NilaiLapangan> updateNilai(List<NilaiLapangan> updatedNilaiListLapangan) {
-//        List<NilaiLapangan> updatedNilaiListResultLapangan = new ArrayList<>();
-//
-//        for (NilaiLapangan updatedNilaiLapangan : updatedNilaiListLapangan) {
-//            Optional<NilaiLapangan> existingNilai = nilaiRepository.findById(updatedNilaiLapangan.getNilaiId());
-//            if (existingNilai.isPresent()) {
-//                // Update the nilai value
-//                existingNilai.get().setNilai(updatedNilaiLapangan.getNilai());
-//                updatedNilaiListResultLapangan.add(nilaiRepository.save(existingNilai.get()));
-//            }
-//        }
-//
-//        return updatedNilaiListResultLapangan;
-//    }
 
 
     public List<NilaiByUser> getNilaiByUser(String username) {
@@ -169,22 +158,26 @@ public class NilaiService {
         return updatedNilaiListResultLapangan;
     }
 
-    private double getMaxValueForQuestion(int questionId) {
-        Questions question = questionRepository.findById((long) questionId).orElse(null);
-        double maxValue = 0.0;
-
-        if (question != null) {
-            // Ambil nilai maksimum dari array options pada entitas Question
-            for (String option : question.getOptions()) {
-                double optionValue = Double.parseDouble(option.replace(',', '.')); // Ubah tanda koma menjadi titik
-                if (optionValue > maxValue) {
-                    maxValue = optionValue;
-                }
-            }
-        }
-
-        return maxValue;
+    public List<NilaiLapangan> getAllNilai (){
+        return nilaiRepository.findAll();
     }
+
+//    private double getMaxValueForQuestion(int questionId) {
+//        Questions question = questionRepository.findById((long) questionId).orElse(null);
+//        double maxValue = 0.0;
+//
+//        if (question != null) {
+//            // Ambil nilai maksimum dari array options pada entitas Question
+//            for (String option : question.getOptions()) {
+//                double optionValue = Double.parseDouble(option.replace(',', '.')); // Ubah tanda koma menjadi titik
+//                if (optionValue > maxValue) {
+//                    maxValue = optionValue;
+//                }
+//            }
+//        }
+//
+//        return maxValue;
+//    }
 
 
 
@@ -199,6 +192,7 @@ public class NilaiService {
 //            throw new ServiceException("Format timestamp tidak valid");
 //        }
 //    }
+
 
 
 }

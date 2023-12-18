@@ -24,7 +24,7 @@ public class PointService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = sdf.format(new java.util.Date());
         java.sql.Date currentDate = java.sql.Date.valueOf(formattedDate);
-        Date testDate = Date.valueOf("2023-11-23");
+        Date testDate = Date.valueOf("2023-12-16");
 
         for (PointsYelyel pointsYelyel : PointData) {
             if (pointsYelyel.getCreateAt() == null){
@@ -97,5 +97,11 @@ public class PointService {
     public List<PointsYelyel> getByUsername(String username){
         return pointRepository.findByUsername(username);
     }
+
+    public List<PointsYelyel> getByNip(String nip){
+        return pointRepository.findByNip(nip);
+
+    }
+
 }
 

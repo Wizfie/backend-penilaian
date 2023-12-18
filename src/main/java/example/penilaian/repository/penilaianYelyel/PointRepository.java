@@ -22,5 +22,6 @@ public interface PointRepository extends JpaRepository <PointsYelyel , Integer> 
 
     List<PointsYelyel> findByUsername(String username);
 
+    List<PointsYelyel> findByNip(String nip);
 }
 
