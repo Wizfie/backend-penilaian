@@ -46,7 +46,18 @@ public class NilaiService {
             if (nilaiLapangan.getTimestamp() == null) {
                 nilaiLapangan.setTimestamp(currentDate);
 //                nilaiLapangan.setTimestamp(testDate);
+
+            double nilaiAsDouble;
+            try {
+                nilaiAsDouble = Double.parseDouble(String.valueOf(nilaiLapangan.getNilai()));
+                nilaiLapangan.setNilai(nilaiAsDouble);
+            } catch (NumberFormatException e) {
+                // Tangani kesalahan jika nilai tidak dapat diubah menjadi Double
+                e.printStackTrace();
+                // Atau lakukan penanganan kesalahan lainnya sesuai kebutuhan Anda
             }
+            }
+
 
             // Cek apakah sudah ada data dengan username, timestamp, dan questionId yang sama
             List<NilaiLapangan> existingNilaiListLapangan = nilaiRepository
@@ -162,36 +173,6 @@ public class NilaiService {
         return nilaiRepository.findAll();
     }
 
-//    private double getMaxValueForQuestion(int questionId) {
-//        Questions question = questionRepository.findById((long) questionId).orElse(null);
-//        double maxValue = 0.0;
-//
-//        if (question != null) {
-//            // Ambil nilai maksimum dari array options pada entitas Question
-//            for (String option : question.getOptions()) {
-//                double optionValue = Double.parseDouble(option.replace(',', '.')); // Ubah tanda koma menjadi titik
-//                if (optionValue > maxValue) {
-//                    maxValue = optionValue;
-//                }
-//            }
-//        }
-//
-//        return maxValue;
-//    }
-
-
-
-
-//    @Transactional
-//    public void deleteNilai(String username, String teamName, java.sql.Date timestamp) throws ServiceException {
-//        try {
-//            nilaiRepository.deleteByTimestampAndUsernameAndTeamName(timestamp, username, teamName);
-//        } catch (EmptyResultDataAccessException e) {
-//            throw new ServiceException("Data tidak ditemukan");
-//        } catch (IllegalArgumentException e) {
-//            throw new ServiceException("Format timestamp tidak valid");
-//        }
-//    }
 
 
 

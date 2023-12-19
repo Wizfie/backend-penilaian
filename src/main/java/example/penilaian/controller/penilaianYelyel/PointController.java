@@ -31,25 +31,7 @@ public class PointController {
         }
     }
 
-    @GetMapping("/average-score")
-    public ResponseEntity<List<TeamScoreDTO>> getAverageScoresByTeamAndDate(
-    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate)
-    {
-        Date sqlStartDate = Date.valueOf(startDate);
 
-        List<TeamScoreDTO> teamScores = pointService.getAverageAndTotalScoresByTeamAndDate(sqlStartDate);
-
-        if (teamScores.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(teamScores, HttpStatus.OK);
-    }
-
-//    @GetMapping("/point")
-//    public List<PointsYelyel> getByUsername(@RequestParam String username) {
-//        return pointService.getByUsername(username);
-//    }
     @GetMapping("/point")
     public List<PointsYelyel> getByNip(@RequestParam String nip) {
         return pointService.getByNip(nip);
@@ -59,5 +41,20 @@ public class PointController {
     @GetMapping("/point/all")
     public List<PointsYelyel> getALlPoint(){
         return pointService.getALlPoint();
+    }
+
+
+    @GetMapping("/details-yelyel/{nip}/{teamName}/{createdAt}")
+    public ResponseEntity<List<PointsYelyel>> getDetail(
+            @PathVariable String nip,
+            @PathVariable String teamName,
+            @PathVariable Date createdAt
+    ) {
+            List<PointsYelyel> points = pointService.getByNipAndTeamNameAndCreateAt(nip, teamName, createdAt    );
+            if (points.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(points);
+
     }
 }

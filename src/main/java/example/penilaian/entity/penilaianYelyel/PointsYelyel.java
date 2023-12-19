@@ -28,8 +28,10 @@ public class PointsYelyel {
     private String username;
 
     @Temporal(TemporalType.DATE)
-    private Date createAt;
+    private Date createdAt;
 
     private String nip;
+
+    private Double maxPoint;
 
 }

@@ -12,16 +12,13 @@ import java.util.List;
 @Repository
 public interface PointRepository extends JpaRepository <PointsYelyel , Integer> {
 
-    List<PointsYelyel> findByUsernameAndTeamNameAndCreateAt(String username, String teamName, Date createAt);
+    List<PointsYelyel> findByUsernameAndTeamNameAndCreatedAt(String username, String teamName, Date createdAt);
 
-//    @Query("SELECT p.teamName, AVG(p.point) FROM PointsYelyel p WHERE p.createAt BETWEEN :startDate AND :endDate GROUP BY p.teamName")
-//    List<Object[]> getAverageScoresByTeamNameAndCreateAt(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
-
-    @Query("SELECT p.teamName, AVG(p.point), SUM(p.point) FROM PointsYelyel p WHERE p.createAt = :startDate  GROUP BY p.teamName")
-    List<Object[]> getAverageScoresAndTotalScoresByTeamNameAndCreateAt(@Param("startDate") Date startDate);
 
     List<PointsYelyel> findByUsername(String username);
 
     List<PointsYelyel> findByNip(String nip);
+
+    List<PointsYelyel> findByNipAndTeamNameAndCreatedAt(String nip, String teamName, Date createdAt);
 }
 
