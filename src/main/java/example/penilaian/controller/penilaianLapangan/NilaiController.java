@@ -2,6 +2,7 @@ package example.penilaian.controller.penilaianLapangan;
 
 import example.penilaian.entity.penilaianLapangan.NilaiLapangan;
 import example.penilaian.model.penilaianLapangan.NilaiByUser;
+import example.penilaian.model.penilaianLapangan.NilaiResponseDTO;
 import example.penilaian.service.penilaianLapangan.NilaiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,30 +46,15 @@ public class NilaiController {
         return nilaiService.getNilaiByUser(username);
     }
 
-    @GetMapping("/nilai-getAll")
-    public List<NilaiLapangan> getAllNilai() {
-        return nilaiService.getAllNilai();
+    @GetMapping("/nilai-lapangan")
+    public ResponseEntity<List<NilaiResponseDTO>> getAllNilai() {
+        try {
+            List<NilaiResponseDTO> nilaiList = nilaiService.getAllNilai();
+            return new ResponseEntity<>(nilaiList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-//    @DeleteMapping("/{username}/{teamName}/{timestamp}")
-//    public ResponseEntity<String> deleteNilai(
-//            @PathVariable String username,
-//            @PathVariable String teamName,
-//            @PathVariable String timestamp) {
-//
-////        System.out.println("Username yang diterima: " + username);
-////        System.out.println("Teams Name yang diterima: " + teamName);
-////        System.out.println("Timestamp yang diterima: " + timestamp);
-//
-//        try {
-////            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//            java.sql.Date date = java.sql.Date.valueOf(timestamp);
-//            nilaiService.deleteNilai(username, teamName, date);
-//            return ResponseEntity.ok("Data dengan " + username +  " - " +  teamName +" - "+ timestamp + " ini Berhasil dihapus");
-//        } catch (ServiceException e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
 
-
-//    }
 }
