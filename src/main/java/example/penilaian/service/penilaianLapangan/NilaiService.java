@@ -36,7 +36,7 @@ public class NilaiService {
 
         String formattedDate = sdf.format(new java.util.Date());
         Date currentDate = Date.valueOf(formattedDate);
-//        Date testDate = Date.valueOf("2023-11-15");
+//        Date testDate = Date.valueOf("2023-12-20");
 
         for (NilaiLapangan nilaiLapangan : nilaiLapanganData) {
             // Perbarui nilaiLapangan timestamp hanya jika belum diisi
