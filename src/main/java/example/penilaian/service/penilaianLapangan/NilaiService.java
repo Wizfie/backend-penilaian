@@ -28,7 +28,6 @@ public class NilaiService {
     private QuestionRepository questionRepository;
 
 
-//    public List<NilaiLapangan>
 
     @Transactional
     public void saveNilai(List<NilaiLapangan> nilaiLapanganData) {
