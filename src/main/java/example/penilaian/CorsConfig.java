@@ -12,6 +12,7 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
 //                .allowedOrigins("https://penilaian-logistic.vercel.app/")
                 .allowedOrigins("http://localhost:5173")
+                .allowedOrigins("http://192.168.43.176:5173/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("Content-Type", "Authorization");
     }

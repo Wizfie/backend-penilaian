@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -56,14 +58,25 @@ public class PointController {
     public ResponseEntity<List<PointsYelyel>> getDetail(
             @PathVariable String nip,
             @PathVariable String teamName,
-            @PathVariable Date createdAt
+            @PathVariable String  createdAt
     ) {
-            List<PointsYelyel> points = pointService.getByNipAndTeamNameAndCreateAt(nip, teamName, createdAt);
-            if (points.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(points);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date parsedDate;
+        try {
+            parsedDate = formatter.parse(createdAt);
+        } catch (ParseException e) {
+            // Tangani kesalahan jika konversi gagal
+            return ResponseEntity.badRequest().build();
+        }
 
+        // Konversi java.util.Date ke java.sql.Date
+        java.sql.Date sqlDate = new java.sql.Date(parsedDate.getTime());
+
+        List<PointsYelyel> points = pointService.getByNipAndTeamNameAndCreateAt(nip, teamName, sqlDate);
+        if (points.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(points);
     }
 
     @GetMapping("/searchYelyel")

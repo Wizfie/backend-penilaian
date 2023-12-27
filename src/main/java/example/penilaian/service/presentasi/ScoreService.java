@@ -142,6 +142,22 @@ public class ScoreService {
             row.createCell(colIndex).setCellValue(scores);
         }
 
+        Row totalRow = sheet.createRow(rowNum);
+
+        totalRow.createCell(1).setCellValue("Total");
+
+// Loop melalui setiap tim untuk menghitung total nilai
+        for (String team : teamNames) {
+            int colIndex = teamColumnMap.get(team);
+            double totalScore = data.stream()
+                    .filter(score -> team.equals(score.getTeamName()))
+                    .mapToDouble(Score::getScore)
+                    .sum();
+            totalRow.createCell(colIndex).setCellValue(totalScore);
+        }
+
+
+
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=data.xlsx");
 

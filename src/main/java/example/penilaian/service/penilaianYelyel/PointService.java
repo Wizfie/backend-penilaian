@@ -36,38 +36,40 @@ public class PointService {
 
     @Transactional
     public void SavePoint(List<PointsYelyel> PointData) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = sdf.format(new java.util.Date());
-        java.sql.Date currentDate = java.sql.Date.valueOf(formattedDate);
-        Date testDate = Date.valueOf("2023-12-16");
-
         for (PointsYelyel pointsYelyel : PointData) {
-            if (pointsYelyel.getCreatedAt() == null){
-                pointsYelyel.setCreatedAt(currentDate);
-            }
+            // Check if an entry exists for the same username, teamName, and createdAt
             List<PointsYelyel> existingPoints = pointRepository.findByUsernameAndTeamNameAndCreatedAt(
                     pointsYelyel.getUsername(),
                     pointsYelyel.getTeamName(),
                     pointsYelyel.getCreatedAt()
             );
 
-            boolean found = false;
-            for (PointsYelyel existingPoint : existingPoints) {
-                if (existingPoint.getSubscriteriaName().equals(pointsYelyel.getSubscriteriaName())) {
-                    if (!existingPoint.getPoint().equals(pointsYelyel.getPoint())) {
-                        existingPoint.setPoint(pointsYelyel.getPoint());
-                        pointRepository.save(existingPoint); // Menyimpan perubahan pada data yang sudah ada
+            if (existingPoints.isEmpty()) {
+                // If no entry exists for the same team and date, save a new entry
+                pointRepository.save(pointsYelyel); // Save new entry
+            } else {
+                // Entry exists for the same team and date
+                boolean entryFound = false;
+                for (PointsYelyel existingPoint : existingPoints) {
+                    if (existingPoint.getSubscriteriaName().equals(pointsYelyel.getSubscriteriaName())) {
+                        entryFound = true;
+                        if (!existingPoint.getPoint().equals(pointsYelyel.getPoint())) {
+                            existingPoint.setPoint(pointsYelyel.getPoint());
+                            pointRepository.save(existingPoint); // Update existing entry with new point
+                        }
+                        break;
                     }
-                    found = true;
-                    break;
                 }
-            }
 
-            if (!found) {
-                pointRepository.save(pointsYelyel); // Jika tidak ada entri yang ditemukan, maka menyimpan entri baru
+                if (!entryFound) {
+                    // If subcriteria is not found for the same team and date, save a new entry
+                    pointRepository.save(pointsYelyel); // Save new entry
+                }
             }
         }
     }
+
+
     public List<PointsYelyel> getALlPoint(){
         return pointRepository.findAll();
     }
@@ -127,18 +129,56 @@ public class PointService {
             teamColumnMap.put(team, colNum++);
         }
 
-        int rowNum = 4; // Mulai baris 5 untuk data
+        // Buat Map untuk menampung nilai-nilai PointsYelyel berdasarkan subscriteriaName
+        Map<String, Map<String, Double>> subcriteriaPointsMap = new HashMap<>();
 
         for (PointsYelyel pointsYelyel : data) {
+            String subcriteria = pointsYelyel.getSubscriteriaName();
+            String teamName = pointsYelyel.getTeamName();
+            Double points = pointsYelyel.getPoint();
+
+            // Cek apakah subcriteria sudah ada di dalam Map
+            if (!subcriteriaPointsMap.containsKey(subcriteria)) {
+                subcriteriaPointsMap.put(subcriteria, new HashMap<>());
+            }
+
+            // Tambahkan poin ke tim yang sesuai di dalam subcriteria
+            subcriteriaPointsMap.get(subcriteria).put(teamName, points);
+        }
+
+        int rowNum = 4; // Mulai baris 5 untuk data
+
+        for (Map.Entry<String, Map<String, Double>> entry : subcriteriaPointsMap.entrySet()) {
+            String subcriteria = entry.getKey();
+            Map<String, Double> teamPointsMap = entry.getValue();
+
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(rowNum - 4);
-            row.createCell(1).setCellValue(pointsYelyel.getSubscriteriaName());
+            row.createCell(1).setCellValue(subcriteria);
 
-            String teamName = pointsYelyel.getTeamName();
-            Double pointsYelyels = pointsYelyel.getPoint();
-            int colIndex = teamColumnMap.get(teamName);
-            row.createCell(colIndex).setCellValue(pointsYelyels);
+            for (String team : teamNames) {
+                int colIndex = teamColumnMap.get(team);
+                if (teamPointsMap.containsKey(team)) {
+                    Double points = teamPointsMap.get(team);
+                    row.createCell(colIndex).setCellValue(points);
+                }
+            }
         }
+            Row totalRow = sheet.createRow(rowNum++);
+            totalRow.createCell(1).setCellValue("Total");
+
+            for (String team : teamNames) {
+                int colIndex = teamColumnMap.get(team);
+
+                double totalPoints = 0.0;
+                for (Map<String, Double> teamPointsMap : subcriteriaPointsMap.values()) {
+                    if (teamPointsMap.containsKey(team)) {
+                        totalPoints += teamPointsMap.get(team);
+                    }
+                }
+
+                totalRow.createCell(colIndex).setCellValue(totalPoints);
+            }
 
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=data.xlsx");
