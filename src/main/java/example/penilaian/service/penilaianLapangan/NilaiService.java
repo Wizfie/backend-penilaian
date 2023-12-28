@@ -2,12 +2,16 @@ package example.penilaian.service.penilaianLapangan;
 
 import example.penilaian.entity.penilaianLapangan.NilaiLapangan;
 import example.penilaian.entity.penilaianLapangan.Questions;
+import example.penilaian.entity.penilaianYelyel.PointsYelyel;
 import example.penilaian.model.penilaianLapangan.NilaiByUser;
 import example.penilaian.model.penilaianLapangan.NilaiResponseDTO;
 import example.penilaian.repository.penilaianLapangan.NilaiRepository;
 import example.penilaian.repository.penilaianLapangan.QuestionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -191,6 +195,10 @@ public class NilaiService {
             throw new RuntimeException("Fail fetch AllNilai");
         }
         return responseDTOList;
+    }
+
+    public Page<NilaiLapangan> findAllScoresBySpecification(Specification<PointsYelyel> spec, PageRequest pageRequest) {
+        return nilaiRepository.findAll(spec, pageRequest);
     }
 
 

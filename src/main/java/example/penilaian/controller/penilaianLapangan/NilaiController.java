@@ -1,14 +1,20 @@
 package example.penilaian.controller.penilaianLapangan;
 
 import example.penilaian.entity.penilaianLapangan.NilaiLapangan;
+import example.penilaian.entity.penilaianYelyel.PointsYelyel;
 import example.penilaian.model.penilaianLapangan.NilaiByUser;
 import example.penilaian.model.penilaianLapangan.NilaiResponseDTO;
 import example.penilaian.service.penilaianLapangan.NilaiService;
+import example.penilaian.specifications.YelyelSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.List;
 
 @RestController
@@ -55,6 +61,20 @@ public class NilaiController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+//    @GetMapping("/searchLapangan")
+//    public ResponseEntity<Page<NilaiLapangan>> searchPresentasiSpecifications(
+//            @RequestParam(required = false) String keyword,
+//            @RequestParam(required = false) Date startDate,
+//            @RequestParam(required = false) Date endDate,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size
+//    ){
+//        PageRequest pageRequest = PageRequest.of(page,size);
+//        Specification<NilaiLapangan> spec = nilaiService.s(keyword ,startDate ,endDate);
+//        Page<NilaiLapangan> result = nilaiService.findAllScoresBySpecification(spec,pageRequest);
+//        return ResponseEntity.ok(result);
+//    }
 
 
 }
