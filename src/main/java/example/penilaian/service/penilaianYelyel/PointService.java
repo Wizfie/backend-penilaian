@@ -4,6 +4,7 @@ import example.penilaian.entity.penilaianYelyel.PointsYelyel;
 import example.penilaian.entity.presentasi.Score;
 import example.penilaian.model.penilaianYelyel.TeamScoreDTO;
 import example.penilaian.repository.penilaianYelyel.PointRepository;
+import example.penilaian.specifications.YelyelSpecification;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.apache.poi.ss.usermodel.Row;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.config.ConfigDataNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -195,6 +197,10 @@ public class PointService {
 
     public Page<PointsYelyel> findAllScoresBySpecification(Specification<PointsYelyel> spec, PageRequest pageRequest) {
         return pointRepository.findAll(spec, pageRequest);
+    }
+
+    public Page<Object[]> getGroupedData(String keyword, Date startDate, Date endDate, Pageable pageable) {
+        return pointRepository.findTotalScoresGroupedWithSpec(keyword, startDate, endDate, pageable);
     }
 }
 

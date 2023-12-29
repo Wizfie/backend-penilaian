@@ -1,15 +1,13 @@
 package example.penilaian.controller.penilaianYelyel;
 
 import example.penilaian.entity.penilaianYelyel.PointsYelyel;
-import example.penilaian.entity.presentasi.Score;
-import example.penilaian.model.penilaianYelyel.TeamScoreDTO;
 import example.penilaian.service.penilaianYelyel.PointService;
-import example.penilaian.specifications.PresentasiSpecification;
 import example.penilaian.specifications.YelyelSpecification;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -91,6 +89,15 @@ public class PointController {
         Specification<PointsYelyel> spec = YelyelSpecification.searchYelyel(keyword ,startDate ,endDate);
         Page<PointsYelyel> result = pointService.findAllScoresBySpecification(spec,pageRequest);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/grouped")
+    public Page<Object[]> getGroupedData(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Date startDate,
+            @RequestParam(required = false) Date endDate,
+            Pageable pageable) {
+        return pointService.getGroupedData(keyword, startDate, endDate, pageable);
     }
 
     @GetMapping("/export-yelyel")

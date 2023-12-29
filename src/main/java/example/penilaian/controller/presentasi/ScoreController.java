@@ -5,6 +5,7 @@ import example.penilaian.repository.presentasi.ScoreRepository;
 import example.penilaian.service.presentasi.ScoreService;
 import example.penilaian.specifications.PresentasiSpecification;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +41,13 @@ public class ScoreController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving scores");
         }
+    }
+
+
+    @GetMapping("/presentasi-all")
+    public List<Score> getAllPresentasi(){
+        return scoreService.getAll();
+
     }
 
 

@@ -73,6 +73,15 @@ public class ScoreService {
         }
     }
 
+    public List<Score> getAll(){
+        try {
+            return scoreRepository.findAll();
+        } catch (Exception e){
+            logger.info("Fail get All score Presentasi");
+            throw new RuntimeException("Fail getAll Presentasi" + e.getMessage());
+        }
+    }
+
 
     public List<Score> getScoreByNip(String nip) {
         try {
