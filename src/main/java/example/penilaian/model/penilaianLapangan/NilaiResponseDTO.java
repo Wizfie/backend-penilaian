@@ -6,19 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NilaiResponse {
+public class NilaiResponseDTO {
     private int nilaiId;
     private double nilai;
     private String teamName;
     private String username;
     private int questionId;
-    private String  timestamp;
-
+    private Date timestamp;
+    private String nip;
     private String questionText;
 }

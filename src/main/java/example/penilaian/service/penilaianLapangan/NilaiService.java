@@ -2,15 +2,16 @@ package example.penilaian.service.penilaianLapangan;
 
 import example.penilaian.entity.penilaianLapangan.NilaiLapangan;
 import example.penilaian.entity.penilaianLapangan.Questions;
+import example.penilaian.entity.penilaianYelyel.PointsYelyel;
 import example.penilaian.model.penilaianLapangan.NilaiByUser;
-import example.penilaian.model.penilaianLapangan.NilaiResponse;
-import example.penilaian.repository.penilaianLapangan.KriteriaRepository;
+import example.penilaian.model.penilaianLapangan.NilaiResponseDTO;
 import example.penilaian.repository.penilaianLapangan.NilaiRepository;
 import example.penilaian.repository.penilaianLapangan.QuestionRepository;
 import jakarta.transaction.Transactional;
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -31,7 +32,6 @@ public class NilaiService {
     private QuestionRepository questionRepository;
 
 
-//    public List<NilaiLapangan>
 
     @Transactional
     public void saveNilai(List<NilaiLapangan> nilaiLapanganData) {
@@ -39,7 +39,7 @@ public class NilaiService {
 
         String formattedDate = sdf.format(new java.util.Date());
         Date currentDate = Date.valueOf(formattedDate);
-//        Date testDate = Date.valueOf("2023-11-15");
+//        Date testDate = Date.valueOf("2023-12-20");
 
         for (NilaiLapangan nilaiLapangan : nilaiLapanganData) {
             // Perbarui nilaiLapangan timestamp hanya jika belum diisi
@@ -169,9 +169,38 @@ public class NilaiService {
         return updatedNilaiListResultLapangan;
     }
 
-    public List<NilaiLapangan> getAllNilai (){
-        return nilaiRepository.findAll();
+    public List<NilaiResponseDTO> getAllNilai () {
+        List<NilaiResponseDTO> responseDTOList;
+        try {
+            List<NilaiLapangan> nilaiLapanganList = nilaiRepository.findAll();
+            responseDTOList = new ArrayList<>();
+
+            for (NilaiLapangan nilaiLapangan : nilaiLapanganList) {
+                String questionText = questionRepository.findQuestionTextById(nilaiLapangan.getQuestionId());
+
+                NilaiResponseDTO responseDTO = new NilaiResponseDTO(
+                        nilaiLapangan.getNilaiId(),
+                        nilaiLapangan.getNilai(),
+                        nilaiLapangan.getTeamName(),
+                        nilaiLapangan.getUsername(),
+                        nilaiLapangan.getQuestionId(),
+                        nilaiLapangan.getTimestamp(),
+                        nilaiLapangan.getNip(),
+                        questionText
+                );
+
+                 responseDTOList.add(responseDTO);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Fail fetch AllNilai");
+        }
+        return responseDTOList;
     }
+
+    public Page<NilaiLapangan> findAllScoresBySpecification(Specification<PointsYelyel> spec, PageRequest pageRequest) {
+        return nilaiRepository.findAll(spec, pageRequest);
+    }
+
 
 
 

@@ -1,13 +1,20 @@
 package example.penilaian.controller.penilaianLapangan;
 
 import example.penilaian.entity.penilaianLapangan.NilaiLapangan;
+import example.penilaian.entity.penilaianYelyel.PointsYelyel;
 import example.penilaian.model.penilaianLapangan.NilaiByUser;
+import example.penilaian.model.penilaianLapangan.NilaiResponseDTO;
 import example.penilaian.service.penilaianLapangan.NilaiService;
+import example.penilaian.specifications.YelyelSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.List;
 
 @RestController
@@ -45,30 +52,29 @@ public class NilaiController {
         return nilaiService.getNilaiByUser(username);
     }
 
-    @GetMapping("/nilai-getAll")
-    public List<NilaiLapangan> getAllNilai() {
-        return nilaiService.getAllNilai();
+    @GetMapping("/nilai-lapangan")
+    public ResponseEntity<List<NilaiResponseDTO>> getAllNilai() {
+        try {
+            List<NilaiResponseDTO> nilaiList = nilaiService.getAllNilai();
+            return new ResponseEntity<>(nilaiList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-//    @DeleteMapping("/{username}/{teamName}/{timestamp}")
-//    public ResponseEntity<String> deleteNilai(
-//            @PathVariable String username,
-//            @PathVariable String teamName,
-//            @PathVariable String timestamp) {
-//
-////        System.out.println("Username yang diterima: " + username);
-////        System.out.println("Teams Name yang diterima: " + teamName);
-////        System.out.println("Timestamp yang diterima: " + timestamp);
-//
-//        try {
-////            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//            java.sql.Date date = java.sql.Date.valueOf(timestamp);
-//            nilaiService.deleteNilai(username, teamName, date);
-//            return ResponseEntity.ok("Data dengan " + username +  " - " +  teamName +" - "+ timestamp + " ini Berhasil dihapus");
-//        } catch (ServiceException e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-
-
+//    @GetMapping("/searchLapangan")
+//    public ResponseEntity<Page<NilaiLapangan>> searchPresentasiSpecifications(
+//            @RequestParam(required = false) String keyword,
+//            @RequestParam(required = false) Date startDate,
+//            @RequestParam(required = false) Date endDate,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size
+//    ){
+//        PageRequest pageRequest = PageRequest.of(page,size);
+//        Specification<NilaiLapangan> spec = nilaiService.s(keyword ,startDate ,endDate);
+//        Page<NilaiLapangan> result = nilaiService.findAllScoresBySpecification(spec,pageRequest);
+//        return ResponseEntity.ok(result);
 //    }
+
+
 }
