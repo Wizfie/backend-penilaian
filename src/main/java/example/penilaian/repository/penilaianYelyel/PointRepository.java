@@ -1,11 +1,13 @@
 package example.penilaian.repository.penilaianYelyel;
 
 import example.penilaian.entity.penilaianYelyel.PointsYelyel;
+import example.penilaian.model.penilaianYelyel.PointDataSummary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
@@ -28,16 +30,21 @@ public interface PointRepository extends JpaRepository <PointsYelyel , Integer> 
 
     Page<PointsYelyel> findAll(Specification<PointsYelyel> spec, Pageable pageRequest);
 
-    @Query("SELECT p.teamName, p.username, p.createdAt, SUM(p.point) " +
-            "FROM PointsYelyel p " +
-            "WHERE (:keyword IS NULL OR lower(p.username) LIKE lower(concat('%', :keyword, '%'))) " +
-            "AND (:startDate IS NULL OR p.createdAt >= :startDate) " +
-            "AND (:endDate IS NULL OR p.createdAt <= :endDate) " +
-            "GROUP BY p.teamName, p.username, p.createdAt")
-    Page<Object[]> findTotalScoresGroupedWithSpec(
-            String keyword,
-            Date startDate,
-            Date endDate,
+
+
+    @Query("SELECT new example.penilaian.model.penilaianYelyel.PointDataSummary(pd.username, pd.nip, pd.createdAt, CAST(SUM(pd.point) AS double), pd.teamName) " +
+            "FROM PointsYelyel pd " +
+            "WHERE (:usernameOrTeamName is null OR pd.username LIKE %:usernameOrTeamName% OR pd.teamName LIKE %:usernameOrTeamName%) " +
+            "AND (:startDate is null OR pd.createdAt >= :startDate) " +
+            "AND (:endDate is null OR pd.createdAt <= :endDate) " +
+            "GROUP BY pd.username, pd.teamName, pd.createdAt, pd.nip")
+    Page<PointDataSummary> getTotalPointsGroupedByUserAndTeamAndDate(
+            @Param("usernameOrTeamName") String usernameOrTeamName,
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
             Pageable pageable);
 }
+
+
+
 

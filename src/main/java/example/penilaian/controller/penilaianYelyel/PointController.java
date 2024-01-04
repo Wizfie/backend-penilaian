@@ -1,19 +1,19 @@
 package example.penilaian.controller.penilaianYelyel;
 
 import example.penilaian.entity.penilaianYelyel.PointsYelyel;
+import example.penilaian.model.penilaianYelyel.PointDataSummary;
 import example.penilaian.service.penilaianYelyel.PointService;
-import example.penilaian.specifications.YelyelSpecification;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
@@ -76,29 +76,19 @@ public class PointController {
         }
         return ResponseEntity.ok(points);
     }
+        @GetMapping("/pointsYelyel")
+        public Page<PointDataSummary> getTotalPointsByUsernameOrTeamNameAndCreatedAtBetween(
+                @RequestParam(required = false) String usernameOrTeamName,
+                @RequestParam(required = false) Date startDate,
+                @RequestParam(required = false) Date endDate,
+                @RequestParam(name = "page", defaultValue = "0") int page,
+                @RequestParam(name = "size", defaultValue = "10") int size,
+                @PageableDefault(page = 0 ,size = 10) Pageable pageable) {
+            Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
-    @GetMapping("/searchYelyel")
-    public ResponseEntity<Page<PointsYelyel>> searchPresentasiSpecifications(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Date startDate,
-            @RequestParam(required = false) Date endDate,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ){
-        PageRequest pageRequest = PageRequest.of(page,size);
-        Specification<PointsYelyel> spec = YelyelSpecification.searchYelyel(keyword ,startDate ,endDate);
-        Page<PointsYelyel> result = pointService.findAllScoresBySpecification(spec,pageRequest);
-        return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/grouped")
-    public Page<Object[]> getGroupedData(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Date startDate,
-            @RequestParam(required = false) Date endDate,
-            Pageable pageable) {
-        return pointService.getGroupedData(keyword, startDate, endDate, pageable);
-    }
+            return pointService.getTotalPointsByUsernameOrTeamNameAndCreatedAtBetween(usernameOrTeamName, startDate, endDate, pageable);
+        }
 
     @GetMapping("/export-yelyel")
     public void exportExcelYelyel(

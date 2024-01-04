@@ -1,10 +1,8 @@
 package example.penilaian.service.penilaianYelyel;
 
 import example.penilaian.entity.penilaianYelyel.PointsYelyel;
-import example.penilaian.entity.presentasi.Score;
-import example.penilaian.model.penilaianYelyel.TeamScoreDTO;
+import example.penilaian.model.penilaianYelyel.PointDataSummary;
 import example.penilaian.repository.penilaianYelyel.PointRepository;
-import example.penilaian.specifications.YelyelSpecification;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.apache.poi.ss.usermodel.Row;
@@ -12,7 +10,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,12 +20,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import static java.lang.Integer.parseInt;
 
 @Service
 public class PointService {
@@ -199,8 +196,9 @@ public class PointService {
         return pointRepository.findAll(spec, pageRequest);
     }
 
-    public Page<Object[]> getGroupedData(String keyword, Date startDate, Date endDate, Pageable pageable) {
-        return pointRepository.findTotalScoresGroupedWithSpec(keyword, startDate, endDate, pageable);
+    public Page<PointDataSummary> getTotalPointsByUsernameOrTeamNameAndCreatedAtBetween(String usernameOrTeamName, Date startDate, Date endDate, Pageable pageable) {
+        return pointRepository.getTotalPointsGroupedByUserAndTeamAndDate(usernameOrTeamName, startDate, endDate, pageable);
     }
+
 }
 
